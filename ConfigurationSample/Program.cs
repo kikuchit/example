@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Configuration;
-using Config;
-using Field;
 
 namespace ConfigurationSample
 {
@@ -13,17 +11,18 @@ namespace ConfigurationSample
         {
             var ac = ApplicationConfig.GetInstanse();
             var display = new Display(ac);
-            display.NumberField.DisplayString = "N";
-            display.TrialField.DisplayString = "T";
-            display.RecordField.DisplayString = "R";
+            display.NumberField.DisplayString = "number";
+            display.TrialField.DisplayString = "trial";
+            display.RecordField.DisplayString = "record";
 
-            var grp = new MyGraphics(ac.BackgroundField.Size.Width, ac.BackgroundField.Size.Height);
-            grp.DrawStringField(display.NumberField);
-            grp.DrawStringField(display.TrialField);
-            grp.DrawStringField(display.RecordField);
-            grp.DrawImageField(display.ResultField);
-            grp.Save(@"c:\sample.bmp");
-            grp.Dispose();
+            using (var grp = new DisplayGraphics(ac.BackgroundField.Size.Width, ac.BackgroundField.Size.Height))
+            {
+                grp.DrawStringField(display.NumberField);
+                grp.DrawStringField(display.TrialField);
+                grp.DrawStringField(display.RecordField);
+                grp.DrawImageField(display.ResultField);
+                grp.Save(@"c:\sample.bmp");
+            }
         }
     }
 }

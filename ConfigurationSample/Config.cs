@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Configuration;
+using System.Drawing;
 
-namespace Config
+namespace ConfigurationSample
 {
     public class ApplicationConfig {
         private DefaultField backgroundField;
@@ -38,11 +39,11 @@ namespace Config
         private static ApplicationConfig instance = null;
 
         private ApplicationConfig() {
-            this.backgroundField = (Config.DefaultField)ConfigurationManager.GetSection("backgroundField");
-            this.numberField = (Config.StringField)ConfigurationManager.GetSection("numberField");
-            this.trialField = (Config.StringField)ConfigurationManager.GetSection("trialField");
-            this.recordField = (Config.StringField)ConfigurationManager.GetSection("recordField");
-            this.resultField = (Config.ImageField)ConfigurationManager.GetSection("resultField");
+            this.backgroundField = (DefaultField)ConfigurationManager.GetSection("backgroundField");
+            this.numberField = (StringField)ConfigurationManager.GetSection("numberField");
+            this.trialField = (StringField)ConfigurationManager.GetSection("trialField");
+            this.recordField = (StringField)ConfigurationManager.GetSection("recordField");
+            this.resultField = (ImageField)ConfigurationManager.GetSection("resultField");
         }
 
         public static ApplicationConfig GetInstanse() {
@@ -250,6 +251,15 @@ namespace Config
         {
             get{ return (int)this["blue"]; }
             set{ this["blue"] = value; }
+        }
+
+        public Color ConfigToColor()
+        {
+            return Color.FromArgb(
+                        this.Alpha,
+                        this.Red,
+                        this.Green,
+                        this.Blue);
         }
 
         /// <summary>

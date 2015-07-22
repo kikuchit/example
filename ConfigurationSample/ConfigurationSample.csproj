@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Field.cs" />
+    <Compile Include="FieldFactory.cs" />
     <Compile Include="MyGraphics.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

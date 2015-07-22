@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
-using Config;
 using System.Collections;
 
-namespace Field
+namespace ConfigurationSample
 {
     class Display {
-        private FieldBackground background;
+        private Field background;
 
         private FieldString numberField;
         public FieldString NumberField {
@@ -34,11 +33,11 @@ namespace Field
         }
         
         public Display(ApplicationConfig config) {
-            this.background = new FieldBackground(config.BackgroundField);
-            this.numberField = new FieldString(config.NumberField);
-            this.trialField = new FieldString(config.TrialField);
-            this.recordField = new FieldString(config.RecordField);
-            this.resultField = new FieldImage(config.ResultField);
+            this.background = (Field)FieldFactory.MakeField(config.BackgroundField);
+            this.numberField = (FieldString)FieldFactory.MakeField(config.NumberField);
+            this.trialField = (FieldString)FieldFactory.MakeField(config.TrialField);
+            this.recordField = (FieldString)FieldFactory.MakeField(config.RecordField);
+            this.resultField = (FieldImage)FieldFactory.MakeField(config.ResultField);
         }
 
         public List<Field> GetList() {
@@ -51,11 +50,13 @@ namespace Field
         }
     }
 
-    abstract class Field
+    class Field
     {
         protected PointF position;
-        protected float width;
-        protected float height;
+        public PointF Position
+        {
+            get { return this.position; }
+        }
 
         protected RectangleF rect;
         public RectangleF Rect
@@ -69,28 +70,12 @@ namespace Field
             get { return this.backColor; }
         }
 
-        public Field(DefaultField config)
+        public Field(PointF position, float width, float height, SolidBrush backColor)
         {
-            this.position = new PointF(config.Position.X, config.Position.Y);
-            this.width = config.Size.Width;
-            this.height = config.Size.Height;
-            this.rect = new RectangleF(this.position.X, this.position.Y, this.width, this.height);
-            this.backColor = new SolidBrush(ConfigToColor(config.BackColor));
+            this.position = position;
+            this.rect = new RectangleF(this.position.X, this.position.Y, width, height);
+            this.backColor = backColor;
         }
-
-        protected static Color ConfigToColor(ColorItem colorConfig)
-        {
-            return Color.FromArgb(
-                        colorConfig.Alpha,
-                        colorConfig.Red,
-                        colorConfig.Green,
-                        colorConfig.Blue);
-        }
-    }
-
-    class FieldBackground : Field
-    {
-        public FieldBackground(DefaultField config) : base(config) { }
     }
 
     class FieldString : Field
@@ -120,11 +105,18 @@ namespace Field
         }
 
 
-        public FieldString(StringField config) : base(config)
+        public FieldString(
+            PointF position,
+            float width,
+            float height,
+            SolidBrush backColor,
+            Font stringFont,
+            SolidBrush stringColor)
+            : base(position, width, height, backColor)
         {
             this.displayString = null;
-            this.stringFont = new Font(config.StringFont.FamilyName, config.StringFont.EmSize);
-            this.stringColor = new SolidBrush(ConfigToColor(config.StringColor));
+            this.stringFont = stringFont;
+            this.stringColor = stringColor;
             this.stringFormat = new StringFormat();
             this.stringFormat.Alignment = StringAlignment.Center;
             this.stringFormat.LineAlignment = StringAlignment.Center;
@@ -139,9 +131,10 @@ namespace Field
             get { return this.imagePath; }
         }
 
-        public FieldImage(ImageField config) : base(config)
+        public FieldImage(PointF position, float width, float height, SolidBrush backColor, string imagePath)
+            : base(position, width, height, backColor)
         {
-            this.imagePath = config.Image.Path;
+            this.imagePath = imagePath;
         }
     }
 }
