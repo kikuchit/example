@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace ConfigurationSample
 {
@@ -30,7 +32,7 @@ namespace ConfigurationSample
         /// 文字列フィールド書き出し
         /// </summary>
         /// <param name="field"></param>
-        public void DrawStringField(FieldString field)
+        public void DrawField(FieldString field)
         {
             this.grp.FillRectangle(field.BackColor, field.Rect);
             this.grp.DrawString(
@@ -45,7 +47,7 @@ namespace ConfigurationSample
         /// イメージフィールド書き出し
         /// </summary>
         /// <param name="field"></param>
-        public void DrawImageField(FieldImage field)
+        public void DrawField(FieldImage field)
         {
             this.grp.FillRectangle(field.BackColor, field.Rect);
             this.grp.DrawImage(new Bitmap(field.ImagePath), field.Rect);
@@ -57,6 +59,21 @@ namespace ConfigurationSample
         /// <param name="filename"></param>
         public void Save(string filename) {
             this.bmp.Save(@filename);
+        }
+
+        /// <summary>
+        /// ビットマップデータをbyte配列に変換して返す
+        /// </summary>
+        /// <returns>ビットマップデータのbyte配列</returns>
+        public byte[] GetBytes()
+        {
+            byte[] bmpData = null;
+            using(var ms = new MemoryStream())
+            {
+                this.bmp.Save(ms, ImageFormat.Bmp);
+                bmpData = ms.ToArray();
+            }
+            return bmpData;
         }
 
         /// <summary>
